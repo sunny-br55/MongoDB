@@ -1,0 +1,47 @@
+Example :- 
+
+use ("Poornima")
+db.createCollection("Students")
+db.Students.insertOne({
+    UID: 1,
+    Name: "Sunny Gupta",
+    Roll: "CS101",
+    Age: 20
+})
+
+db.Students.insertOne({
+    UID: 2,
+    Name: "Tanuj Mehta",
+    Roll: "CS102",
+    Age: 21
+})
+db.Students.insertMany([
+    { UID: 3, Name: "Amit Verma", Roll: "CS103", Age: 22 },
+    { UID: 4, Name: "Sneha Gupta", Roll: "CS104", Age: 20 }
+])
+
+
+
+
+
+Task:- 
+
+use EcommerceDB
+db.createCollection("Products")
+db.Products.insertOne({
+    ProductID: 101,
+    Name: "Laptop",
+    Category: "Electronics",
+    Price: 55000,
+    Stock: 25
+})
+
+db.Products.insertOne({
+    ProductID: 102,
+    Name: "Smartphone",
+    Category: "Electronics",
+    Price: 25000,
+    Stock: 500
+})
+
+
