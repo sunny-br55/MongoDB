@@ -1,0 +1,793 @@
+use ecomDB
+
+// old data remove karne ke liye
+db.aggex.drop()
+
+const categories = [
+    "Electronics", "Mobiles", "Laptops", "Home Appliances", "Fashion",
+    "Books", "Sports", "Beauty", "Grocery", "Furniture"
+]
+
+const subCategories = {
+    "Electronics": ["Headphones", "Smartwatch", "Camera", "Speaker"],
+    "Mobiles": ["Android", "iPhone", "Feature Phone"],
+    "Laptops": ["Gaming", "Business", "Student"],
+    "Home Appliances": ["Refrigerator", "Washing Machine", "Microwave"],
+    "Fashion": ["Men", "Women", "Kids"],
+    "Books": ["Programming", "Fiction", "Education"],
+    "Sports": ["Cricket", "Football", "Fitness"],
+    "Beauty": ["Skincare", "Haircare", "Makeup"],
+    "Grocery": ["Snacks", "Beverages", "Staples"],
+    "Furniture": ["Chair", "Table", "Sofa"]
+}
+
+const brands = [
+    "Samsung", "Apple", "Sony", "LG", "HP", "Dell",
+    "Lenovo", "Nike", "Adidas", "Boat", "OnePlus", "AmazonBasics"
+]
+
+const cities = [
+    "Chennai", "Coimbatore", "Bangalore", "Hyderabad", "Mumbai",
+    "Delhi", "Pune", "Kochi", "Kolkata", "Ahmedabad"
+]
+
+const states = [
+    "Tamil Nadu", "Karnataka", "Telangana", "Maharashtra",
+    "Delhi", "Kerala", "West Bengal", "Gujarat"
+]
+
+const paymentMethods = [
+    "UPI", "Credit Card", "Debit Card", "Net Banking", "Cash on Delivery"
+]
+
+const orderStatuses = [
+    "Delivered", "Shipped", "Processing", "Cancelled", "Returned"
+]
+
+const sellers = [
+    "RetailHub", "TechWorld", "MegaStore",
+    "DigitalMart", "SmartShop", "PrimeRetail"
+]
+
+const tags = [
+    "new", "popular", "trending", "premium",
+    "budget", "best-seller", "discount", "limited-stock"
+]
+
+let documents = []
+
+// 5000 records
+for (let i = 1; i <= 5000; i++) {
+
+    const category = categories[Math.floor(Math.random() * categories.length)]
+
+    const subCategory =
+        subCategories[category][
+            Math.floor(Math.random() * subCategories[category].length)
+        ]
+
+    const brand = brands[Math.floor(Math.random() * brands.length)]
+    const city = cities[Math.floor(Math.random() * cities.length)]
+    const state = states[Math.floor(Math.random() * states.length)]
+
+    const paymentMethod =
+        paymentMethods[Math.floor(Math.random() * paymentMethods.length)]
+
+    const orderStatus =
+        orderStatuses[Math.floor(Math.random() * orderStatuses.length)]
+
+    const seller = sellers[Math.floor(Math.random() * sellers.length)]
+
+    const quantity = Math.floor(Math.random() * 5) + 1
+    const price = Math.floor(Math.random() * 95000) + 500
+    const discount = Math.floor(Math.random() * 51)
+
+    const discountedPrice = Math.round(
+        price - (price * discount / 100)
+    )
+
+    const rating = Number((Math.random() * 4 + 1).toFixed(1))
+    const stock = Math.floor(Math.random() * 500)
+
+    const selectedTags = []
+
+    // 2 tags
+    for (let j = 0; j < 2; j++) {
+        selectedTags.push(
+            tags[Math.floor(Math.random() * tags.length)]
+        )
+    }
+
+    const startDate = new Date("2024-01-01").getTime()
+    const endDate = new Date("2026-08-25").getTime()
+
+    const randomDate = new Date(
+        startDate + Math.random() * (endDate - startDate)
+    )
+
+    const product = {
+        productId: "PROD" + String(i).padStart(5, "0"),
+        productName: brand + " " + subCategory + " " + i,
+        category: category,
+        subCategory: subCategory,
+        brand: brand,
+
+        price: price,
+        discountPercentage: discount,
+        discountedPrice: discountedPrice,
+        quantity: quantity,
+        revenue: discountedPrice * quantity,
+
+        rating: rating,
+        reviewCount: Math.floor(Math.random() * 5000),
+        stock: stock,
+        inStock: stock > 0,
+
+        seller: {
+            name: seller,
+            sellerRating: Number((Math.random() * 4 + 1).toFixed(1))
+        },
+
+        customer: {
+            customerId: "CUS" +
+                String(Math.floor(Math.random() * 1000) + 1).padStart(4, "0"),
+            city: city,
+            state: state,
+            age: Math.floor(Math.random() * 50) + 18
+        },
+
+        payment: {
+            method: paymentMethod,
+            transactionId: "TXN" +
+                Math.random().toString(36).substring(2, 12)
+        },
+
+        orderStatus: orderStatus,
+        orderDate: randomDate,
+        tags: selectedTags,
+
+        specifications: {
+            warranty: (Math.floor(Math.random() * 3) + 1) + " years",
+
+            color: [
+                "Black", "White", "Blue", "Red", "Silver"
+            ][Math.floor(Math.random() * 5)],
+
+            weight: Number((Math.random() * 5 + 0.5).toFixed(2))
+        },
+
+        isFeatured: Math.random() > 0.7,
+        createdAt: new Date()
+    }
+
+    documents.push(product)
+
+    // 500-500 karke insert
+    if (documents.length === 500) {
+        db.aggex.insertMany(documents)
+        documents = []
+    }
+}
+
+// remaining data
+if (documents.length > 0) {
+    db.aggex.insertMany(documents)
+}
+
+print("5000 documents inserted successfully into aggex!")
+
+// AGGREGATION
+
+// 1. $match
+// WHERE
+
+db.aggex.aggregate([
+    {
+        $match: {
+            category: "Electronics"
+        }
+    }
+])
+
+// price greater than 50000
+
+db.aggex.aggregate([
+    {
+        $match: {
+            price: {
+                $gt: 50000
+            }
+        }
+    }
+])
+
+// 2. $project
+// show only selected fields
+
+db.aggex.aggregate([
+    {
+        $project: {
+            _id: 0,
+            productName: 1,
+            price: 1
+        }
+    }
+])
+
+// calculated field
+
+db.aggex.aggregate([
+    {
+        $project: {
+            _id: 0,
+            productName: 1,
+            totalValue: {
+                $multiply: ["$price", "$quantity"]
+            }
+        }
+    }
+])
+
+// 3. $group
+// works like GROUP BY
+
+db.aggex.aggregate([
+    {
+        $group: {
+            _id: "$category"
+        }
+    }
+])
+
+// with calculation
+
+db.aggex.aggregate([
+    {
+        $group: {
+            _id: "$category",
+
+            totalProducts: {
+                $sum: 1
+            },
+
+            totalQuantity: {
+                $sum: "$quantity"
+            },
+
+            averagePrice: {
+                $avg: "$price"
+            }
+        }
+    }
+])
+
+// 4. $sort
+// 1 ascending, -1 descending
+
+db.aggex.aggregate([
+    {
+        $sort: {
+            price: -1
+        }
+    }
+])
+
+// 5. $limit
+// 2 records only
+
+db.aggex.aggregate([
+    {
+        $sort: {
+            price: -1
+        }
+    },
+    {
+        $limit: 2
+    }
+])
+
+// 6. $skip
+// first 2 skip
+
+db.aggex.aggregate([
+    {
+        $skip: 2
+    }
+])
+
+// 7. $unwind
+// array ko alag documents me
+
+db.aggex.aggregate([
+    {
+        $unwind: "$tags"
+    }
+])
+
+// 8. $count
+// count
+
+db.aggex.aggregate([
+    {
+        $count: "totalProducts"
+    }
+])
+
+// 9. $addFields
+// new field
+
+db.aggex.aggregate([
+    {
+        $addFields: {
+            totalValue: {
+                $multiply: ["$price", "$quantity"]
+            }
+        }
+    }
+])
+
+// 10. $set
+// field add/change
+
+db.aggex.aggregate([
+    {
+        $set: {
+            totalValue: {
+                $multiply: ["$price", "$quantity"]
+            }
+        }
+    }
+])
+
+// 11. $unset
+// field remove
+
+db.aggex.aggregate([
+    {
+        $unset: [
+            "specifications.weight"
+        ]
+    }
+])
+
+// 12. $replaceWith
+// selected fields ka new document
+
+db.aggex.aggregate([
+    {
+        $replaceWith: {
+            productName: "$productName",
+            price: "$price",
+            category: "$category"
+        }
+    }
+])
+
+// 13. $lookup
+// JOIN jaisa
+// customers collection required
+
+db.customers.insertMany([
+    {
+        customerId: "CUS0001",
+        name: "Rahul"
+    },
+    {
+        customerId: "CUS0002",
+        name: "Aman"
+    }
+])
+
+db.aggex.aggregate([
+    {
+        $lookup: {
+            from: "customers",
+            localField: "customer.customerId",
+            foreignField: "customerId",
+            as: "customerDetails"
+        }
+    }
+])
+
+// 14. $graphLookup
+// recursive data ke liye
+// employees collection required
+
+db.employees.aggregate([
+    {
+        $graphLookup: {
+            from: "employees",
+            startWith: "$employeeId",
+            connectFromField: "employeeId",
+            connectToField: "managerId",
+            as: "team"
+        }
+    }
+])
+
+// 15. $sample
+// random records
+
+db.aggex.aggregate([
+    {
+        $sample: {
+            size: 5
+        }
+    }
+])
+
+// 16. $bucket
+// fixed ranges
+
+db.aggex.aggregate([
+    {
+        $bucket: {
+            groupBy: "$price",
+            boundaries: [0, 10000, 30000, 50000, 100000],
+            default: "Other",
+            output: {
+                count: {
+                    $sum: 1
+                }
+            }
+        }
+    }
+])
+
+// 17. $bucketAuto
+// automatic ranges
+
+db.aggex.aggregate([
+    {
+        $bucketAuto: {
+            groupBy: "$price",
+            buckets: 5
+        }
+    }
+])
+
+// GROUP OPERATORS
+
+// $sum
+
+db.aggex.aggregate([
+    {
+        $group: {
+            _id: "$category",
+            totalRevenue: {
+                $sum: "$revenue"
+            }
+        }
+    }
+])
+
+// $avg
+
+db.aggex.aggregate([
+    {
+        $group: {
+            _id: "$category",
+            averagePrice: {
+                $avg: "$price"
+            }
+        }
+    }
+])
+
+// $min
+
+db.aggex.aggregate([
+    {
+        $group: {
+            _id: "$category",
+            minimumPrice: {
+                $min: "$price"
+            }
+        }
+    }
+])
+
+// $max
+
+db.aggex.aggregate([
+    {
+        $group: {
+            _id: "$category",
+            maximumPrice: {
+                $max: "$price"
+            }
+        }
+    }
+])
+
+// $first
+// first value
+
+db.aggex.aggregate([
+    {
+        $sort: {
+            price: 1
+        }
+    },
+    {
+        $group: {
+            _id: "$category",
+            firstProduct: {
+                $first: "$productName"
+            }
+        }
+    }
+])
+
+// $last
+// last value
+
+db.aggex.aggregate([
+    {
+        $sort: {
+            price: 1
+        }
+    },
+    {
+        $group: {
+            _id: "$category",
+            lastProduct: {
+                $last: "$productName"
+            }
+        }
+    }
+])
+
+// $push
+// values ko array me
+
+db.aggex.aggregate([
+    {
+        $group: {
+            _id: "$category",
+            products: {
+                $push: "$productName"
+            }
+        }
+    }
+])
+
+// $addToSet
+// unique values
+
+db.aggex.aggregate([
+    {
+        $group: {
+            _id: "$category",
+            brands: {
+                $addToSet: "$brand"
+            }
+        }
+    }
+])
+
+// ARRAY OPERATORS
+
+// $filter
+// matching values
+
+db.aggex.aggregate([
+    {
+        $project: {
+            productName: 1,
+            tags: {
+                $filter: {
+                    input: "$tags",
+                    as: "tag",
+                    cond: {
+                        $eq: ["$$tag", "popular"]
+                    }
+                }
+            }
+        }
+    }
+])
+
+// $map
+// array values change
+
+db.aggex.aggregate([
+    {
+        $project: {
+            tags: {
+                $map: {
+                    input: "$tags",
+                    as: "tag",
+                    in: {
+                        $toUpper: "$$tag"
+                    }
+                }
+            }
+        }
+    }
+])
+
+// $reduce
+// array ko single value me
+
+db.aggex.aggregate([
+    {
+        $project: {
+            tagString: {
+                $reduce: {
+                    input: "$tags",
+                    initialValue: "",
+                    in: {
+                        $concat: [
+                            "$$value",
+                            {
+                                $cond: [
+                                    {
+                                        $eq: ["$$value", ""]
+                                    },
+                                    "",
+                                    ", "
+                                ]
+                            },
+                            "$$this"
+                        ]
+                    }
+                }
+            }
+        }
+    }
+])
+
+// COMBINING STAGES
+
+// top 3 Electronics products
+
+db.aggex.aggregate([
+    {
+        $match: {
+            category: "Electronics"
+        }
+    },
+    {
+        $sort: {
+            price: -1
+        }
+    },
+    {
+        $limit: 3
+    },
+    {
+        $project: {
+            _id: 0,
+            productName: 1,
+            price: 1
+        }
+    }
+])
+
+// category wise average
+
+db.aggex.aggregate([
+    {
+        $group: {
+            _id: "$category",
+            averagePrice: {
+                $avg: "$price"
+            },
+            totalProducts: {
+                $sum: 1
+            }
+        }
+    },
+    {
+        $sort: {
+            averagePrice: -1
+        }
+    }
+])
+
+// HAVING jaisa
+// pehle group, fir filter
+
+db.aggex.aggregate([
+    {
+        $group: {
+            _id: "$category",
+            totalProducts: {
+                $sum: 1
+            }
+        }
+    },
+    {
+        $match: {
+            totalProducts: {
+                $gt: 450
+            }
+        }
+    }
+])
+
+// category wise revenue
+
+db.aggex.aggregate([
+    {
+        $group: {
+            _id: "$category",
+            totalRevenue: {
+                $sum: "$revenue"
+            }
+        }
+    },
+    {
+        $sort: {
+            totalRevenue: -1
+        }
+    }
+])
+
+// SAVE RESULT
+
+// $out
+// result new collection me
+
+db.aggex.aggregate([
+    {
+        $group: {
+            _id: "$category",
+            totalProducts: {
+                $sum: 1
+            }
+        }
+    },
+    {
+        $out: "categorySummary"
+    }
+])
+
+// $merge
+// result merge
+
+db.aggex.aggregate([
+    {
+        $group: {
+            _id: "$category",
+            totalRevenue: {
+                $sum: "$revenue"
+            }
+        }
+    },
+    {
+        $merge: {
+            into: "categoryRevenue",
+            on: "_id",
+            whenMatched: "replace",
+            whenNotMatched: "insert"
+        }
+    }
+])
+
+// SQL TO MONGODB
+
+// WHERE    -> $match
+// SELECT   -> $project
+// GROUP BY -> $group
+// ORDER BY -> $sort
+// LIMIT    -> $limit
+// OFFSET   -> $skip
+// JOIN     -> $lookup
+// COUNT    -> $count / $sum
+// AVG      -> $avg
+// SUM      -> $sum
+// MIN      -> $min
+// MAX      -> $max
+
+// STAGE TYPES
+
+// Filtering: $match
+// Fields: $project, $set, $addFields, $unset, $replaceWith
+// Grouping: $group, $count
+// Sorting: $sort, $skip, $limit
+// Arrays: $unwind, $filter, $map, $reduce
+// Join: $lookup, $graphLookup
+// Output: $out, $merge
+// Statistics: $sample, $bucket, $bucketAuto
