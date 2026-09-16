@@ -1,4 +1,4 @@
-// Insert student data
+// insert data
 
 db.students.insertMany([
     {
@@ -170,9 +170,7 @@ db.students.insertMany([
 ])
 
 
-// Logical operators
-
-// $and
+// and
 db.students.find({
     $and: [
         { department: "CSE" },
@@ -180,7 +178,7 @@ db.students.find({
     ]
 })
 
-// $or
+// or
 db.students.find({
     $or: [
         { department: "CSE" },
@@ -188,7 +186,7 @@ db.students.find({
     ]
 })
 
-// $not
+// not
 db.students.find({
     marks: {
         $not: {
@@ -197,7 +195,7 @@ db.students.find({
     }
 })
 
-// $nor
+// nor
 db.students.find({
     $nor: [
         { department: "CSE" },
@@ -206,44 +204,42 @@ db.students.find({
 })
 
 
-// Comparison operators
-
-// $eq
+// equal
 db.students.find({
     department: {
         $eq: "CSE"
     }
 })
 
-// $gt
+// greater than
 db.students.find({
     marks: {
         $gt: 80
     }
 })
 
-// $lt
+// less than
 db.students.find({
     marks: {
         $lt: 70
     }
 })
 
-// $gte
+// greater than or equal
 db.students.find({
     marks: {
         $gte: 85
     }
 })
 
-// $lte
+// less than or equal
 db.students.find({
     marks: {
         $lte: 70
     }
 })
 
-// $ne
+// not equal
 db.students.find({
     department: {
         $ne: "CSE"
@@ -251,23 +247,21 @@ db.students.find({
 })
 
 
-// Array operators
-
-// $in
+// in
 db.students.find({
     department: {
         $in: ["CSE", "IT"]
     }
 })
 
-// $nin
+// nin
 db.students.find({
     department: {
         $nin: ["CSE", "IT"]
     }
 })
 
-// $all
+// all
 db.students.find({
     skills: {
         $all: ["Python", "MongoDB"]
@@ -275,9 +269,7 @@ db.students.find({
 })
 
 
-// $elemMatch
-
-// Add subjects
+// add subjects
 db.students.updateOne(
     { rollNo: 101 },
     {
@@ -291,7 +283,7 @@ db.students.updateOne(
     }
 )
 
-// Find MongoDB with marks > 85
+// elemMatch
 db.students.find({
     subjects: {
         $elemMatch: {
@@ -301,7 +293,7 @@ db.students.find({
     }
 })
 
-// $size
+// size
 db.students.find({
     skills: {
         $size: 3
@@ -309,9 +301,7 @@ db.students.find({
 })
 
 
-// Projection
-
-// Using $project
+// project
 db.students.aggregate([
     {
         $project: {
@@ -323,7 +313,7 @@ db.students.aggregate([
     }
 ])
 
-// Display name and marks
+// name and marks
 db.students.find(
     {},
     {
@@ -333,7 +323,7 @@ db.students.find(
     }
 )
 
-// Exclude address
+// without address
 db.students.find(
     {},
     {
@@ -342,9 +332,7 @@ db.students.find(
 )
 
 
-// $slice
-
-// First two skills
+// first two skills
 db.students.find(
     {},
     {
@@ -356,23 +344,21 @@ db.students.find(
 )
 
 
-// Element operators
-
-// $exists true
+// scholarship exists
 db.students.find({
     scholarship: {
         $exists: true
     }
 })
 
-// $exists false
+// scholarship not exists
 db.students.find({
     scholarship: {
         $exists: false
     }
 })
 
-// $type
+// integer marks
 db.students.find({
     marks: {
         $type: "int"
@@ -380,9 +366,7 @@ db.students.find({
 })
 
 
-// $regex
-
-// Names starting with A
+// name starts with A
 db.students.find({
     name: {
         $regex: "^A"
@@ -390,9 +374,7 @@ db.students.find({
 })
 
 
-// Update operations
-
-// $set
+// update price
 db.products.updateOne(
     { productId: 1 },
     {
@@ -402,7 +384,7 @@ db.products.updateOne(
     }
 )
 
-// Update price and stock
+// update price and stock
 db.products.updateOne(
     { productId: 2 },
     {
@@ -413,7 +395,7 @@ db.products.updateOne(
     }
 )
 
-// Update seller name
+// update seller
 db.products.updateOne(
     { productId: 3 },
     {
@@ -423,7 +405,7 @@ db.products.updateOne(
     }
 )
 
-// $push
+// push
 db.products.updateOne(
     { productId: 4 },
     {
@@ -433,7 +415,7 @@ db.products.updateOne(
     }
 )
 
-// $addToSet
+// addToSet
 db.products.updateOne(
     { productId: 5 },
     {
@@ -443,7 +425,7 @@ db.products.updateOne(
     }
 )
 
-// $inc
+// increase stock
 db.products.updateOne(
     { productId: 6 },
     {
@@ -453,7 +435,7 @@ db.products.updateOne(
     }
 )
 
-// Decrease stock
+// decrease stock
 db.products.updateOne(
     { productId: 6 },
     {
@@ -463,7 +445,7 @@ db.products.updateOne(
     }
 )
 
-// $unset
+// remove rating
 db.products.updateOne(
     { productId: 1 },
     {
@@ -474,9 +456,7 @@ db.products.updateOne(
 )
 
 
-// updateMany
-
-// Laptop products
+// update many
 db.products.updateMany(
     { category: "Laptop" },
     {
@@ -486,7 +466,7 @@ db.products.updateMany(
     }
 )
 
-// Samsung products
+// increase Samsung price
 db.products.updateMany(
     { brand: "Samsung" },
     {
@@ -497,8 +477,7 @@ db.products.updateMany(
 )
 
 
-// Multiple operators
-
+// multiple updates
 db.products.updateOne(
     { productId: 10 },
     {
@@ -506,11 +485,9 @@ db.products.updateOne(
             price: 25000,
             inStock: true
         },
-
         $inc: {
             stock: 10
         },
-
         $push: {
             tags: "sale"
         }
@@ -518,27 +495,25 @@ db.products.updateOne(
 )
 
 
-// Delete operations
-
-// deleteOne
+// delete one
 db.products.deleteOne({
     productId: 10
 })
 
-// deleteMany
+// delete laptops
 db.products.deleteMany({
     category: "Laptop"
 })
 
-// Price greater than 30000
+// delete price greater than 30000
 db.products.deleteMany({
     price: {
         $gt: 30000
     }
 })
 
-// Delete all documents
+// delete all data
 db.products.deleteMany({})
 
-// Delete collection
+// delete collection
 db.products.drop()
