@@ -364,6 +364,233 @@ db.students.find({
 })
 
 
+for (let i = 1; i <= 50; i++) {
+
+    db.products.insertOne({
+        productId: i,
+        productName: "Product " + i ,
+        category:
+            i % 5 === 0 ? "Laptop" :
+            i % 5 === 1 ? "Mobile" :
+            i % 5 === 2 ? "Headphones" :
+            i % 5 === 3 ? "Keyboard" :
+                          "Mouse",
+
+        brand:
+            i % 3 === 0 ? "Dell" :
+            i % 3 === 1 ? "Samsung" :
+                          "HP",
+
+        price: 1000 + (i * 500),
+
+        stock: 10 + i,
+
+        rating: 3 + ((i % 3) * 0.5),
+
+        inStock: i % 4 !== 0,
+
+        tags: [
+            "electronics",
+            i % 2 === 0 ? "featured" : "new"
+        ],
+
+        seller: {
+            sellerId: 1000 + i,
+            sellerName: "Seller " + i
+        },
+
+        createdAt: new Date()
+    });
+}
+
+READ (Find) Operation : 
+1.	How do you find all products belonging to the Laptop category?
+db.products.find({
+    category: "Laptop"
+})
+2.	How do you find all products that are currently in stock?
+db.products.find({
+    inStock: true
+})
+3.	How do you find products whose price is greater than 20000?
+db.products.find({
+    price: {
+        $gt: 20000
+    }
+})
+4.	How do you find products whose price is less than 10000?
+db.products.find({
+    price: {
+        $lt: 10000 } })
+5.	How do you find products whose price is between 10000 and 30000?
+db.products.find({
+    price: {
+        $gte: 10000,
+        $lte: 30000 } })
+6.	How do you find products sold by Seller 10?
+db.products.find({
+    "seller.sellerName": "Seller 10" })
+
+
+MongoDB — Update Operations
+MongoDB provides several operations for modifying existing documents:
+updateOne()
+updateMany()
+replaceOne()
+
+What is updateOne() in MongoDB?
+updateOne() is used to modify the first document that matches a specified condition.
+Syntax:
+db.collection.updateOne(
+    { filter },
+    { update })
+1.	Change the price of Product 1 to 10000.
+db.products.updateOne(
+    { productId: 1 },
+    { $set: { price: 10000 } } )
+
+Updating Multiple Fields
+1.	Update the price and stock of Product 2.
+db.products.updateOne(
+    { productId: 2 },
+    {
+        $set: {
+            price: 15000,
+            stock: 100
+        }
+    }
+)
+2.	Change the seller name of Product 3 to "Premium Seller".
+db.products.updateOne(
+    { productId: 3 },
+    {
+        $set: {
+            "seller.sellerName": "Premium Seller"
+        }
+    }
+)
+
+3.	Add "sale" to the tags array of Product 4.
+db.products.updateOne(
+    { productId: 4 },
+    {
+        $push: {
+            tags: "sale"
+        }
+    }
+)
+4.	Add "electronics" to the tags of Product 5 without creating a duplicate.
+db.products.updateOne(
+    { productId: 5 },
+    {
+        $addToSet: {
+            tags: "electronics" } } )
+$inc
+$inc is used to increase or decrease a numeric field.
+5.	Increase the stock of Product 6 by 20.
+db.products.updateOne(
+    { productId: 6 },
+    {
+        $inc: {
+            stock: 20
+        }
+    }
+)
+6.	Decrease the stock of Product 6 by 5.
+Answer:
+db.products.updateOne(
+    { productId: 6 },
+    {
+        $inc: {
+            stock: -5
+        }
+    }
+)
+updateMany()
+Now we move from one document → multiple documents.
+1.	Set inStock to true for all products belonging to the Laptop category.
+db.products.updateMany(
+    { category: "Laptop" },
+    {
+        $set: {
+            inStock: true
+        }
+    }
+)
+2.	Increase the price of all Samsung products by 1000.
+db.products.updateMany(
+    { brand: "Samsung" },
+    {
+        $inc: {
+            price: 1000
+        }
+    }
+)
+Example using multiple operators
+db.products.updateOne(
+    { productId: 10 },
+    {
+        $set: {
+            price: 25000,
+            inStock: true
+        },
+        $inc: {
+            stock: 10
+        },
+        $push: {
+            tags: "sale" }})
+
+MongoDB — Delete Operations
+MongoDB mainly provides two deletion methods:
+deleteOne()
+deleteMany()
+
+deleteOne()
+What is deleteOne()?
+deleteOne() is used to delete the first document that matches a specified condition.
+Syntax:
+db.collection.deleteOne({
+    condition
+})
+1.	Delete the product whose productId is 10.
+db.products.deleteOne({
+    productId: 10
+})
+
+deleteMany()
+What is deleteMany()?
+deleteMany() is used to delete all documents that match a specified condition.
+Syntax:
+db.collection.deleteMany({
+    condition
+})
+1.	Delete all products belonging to the Laptop category.
+db.products.deleteMany({
+    category: "Laptop"
+})
+2.	Delete all products whose price is greater than 30000.
+Answer:
+db.products.deleteMany({
+    price: {
+        $gt: 30000
+    }
+})
+3.	How do you delete all documents from the products collection without deleting the collection itself?
+db.products.deleteMany({})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
