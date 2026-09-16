@@ -1,254 +1,245 @@
-use ecomDB
+use collegeDB
 
-// old data remove karne ke liye
-db.aggex.drop()
+// delete previous data
+db.shopOrders.drop()
 
-const categories = [
-    "Electronics", "Mobiles", "Laptops", "Home Appliances", "Fashion",
-    "Books", "Sports", "Beauty", "Grocery", "Furniture"
+// data
+const itemTypes = [
+    "Notebook", "Pen", "Backpack", "Water Bottle", "Calculator",
+    "Earphones", "Mouse", "Keyboard", "USB Drive", "Desk Lamp"
 ]
 
-const subCategories = {
-    "Electronics": ["Headphones", "Smartwatch", "Camera", "Speaker"],
-    "Mobiles": ["Android", "iPhone", "Feature Phone"],
-    "Laptops": ["Gaming", "Business", "Student"],
-    "Home Appliances": ["Refrigerator", "Washing Machine", "Microwave"],
-    "Fashion": ["Men", "Women", "Kids"],
-    "Books": ["Programming", "Fiction", "Education"],
-    "Sports": ["Cricket", "Football", "Fitness"],
-    "Beauty": ["Skincare", "Haircare", "Makeup"],
-    "Grocery": ["Snacks", "Beverages", "Staples"],
-    "Furniture": ["Chair", "Table", "Sofa"]
-}
+const departments = [
+    "CSE", "ECE", "ME", "Civil", "AI", "IT"
+]
 
 const brands = [
-    "Samsung", "Apple", "Sony", "LG", "HP", "Dell",
-    "Lenovo", "Nike", "Adidas", "Boat", "OnePlus", "AmazonBasics"
+    "Classmate", "Cello", "Wildcraft", "Casio",
+    "JBL", "Logitech", "HP", "Portronics"
 ]
 
 const cities = [
-    "Chennai", "Coimbatore", "Bangalore", "Hyderabad", "Mumbai",
-    "Delhi", "Pune", "Kochi", "Kolkata", "Ahmedabad"
+    "Jaipur", "Delhi", "Pune", "Lucknow",
+    "Patna", "Bhopal", "Indore", "Kota"
 ]
 
-const states = [
-    "Tamil Nadu", "Karnataka", "Telangana", "Maharashtra",
-    "Delhi", "Kerala", "West Bengal", "Gujarat"
+const payment = [
+    "UPI", "Card", "Cash", "Net Banking"
 ]
 
-const paymentMethods = [
-    "UPI", "Credit Card", "Debit Card", "Net Banking", "Cash on Delivery"
-]
-
-const orderStatuses = [
-    "Delivered", "Shipped", "Processing", "Cancelled", "Returned"
+const status = [
+    "Delivered", "Shipped", "Pending", "Cancelled", "Returned"
 ]
 
 const sellers = [
-    "RetailHub", "TechWorld", "MegaStore",
-    "DigitalMart", "SmartShop", "PrimeRetail"
+    "CampusStore", "TechPoint", "BookCorner",
+    "DailyNeeds", "StudentMart"
+]
+
+const colours = [
+    "Black", "Blue", "Red", "White", "Green"
 ]
 
 const tags = [
-    "new", "popular", "trending", "premium",
-    "budget", "best-seller", "discount", "limited-stock"
+    "college", "daily-use", "new", "offer",
+    "popular", "useful"
 ]
 
-let documents = []
+let data = []
 
-// 5000 records
-for (let i = 1; i <= 5000; i++) {
+// inserting records
+for (let i = 1; i <= 3000; i++) {
 
-    const category = categories[Math.floor(Math.random() * categories.length)]
-
-    const subCategory =
-        subCategories[category][
-            Math.floor(Math.random() * subCategories[category].length)
-        ]
-
+    const item = itemTypes[Math.floor(Math.random() * itemTypes.length)]
+    const department = departments[Math.floor(Math.random() * departments.length)]
     const brand = brands[Math.floor(Math.random() * brands.length)]
     const city = cities[Math.floor(Math.random() * cities.length)]
-    const state = states[Math.floor(Math.random() * states.length)]
 
-    const paymentMethod =
-        paymentMethods[Math.floor(Math.random() * paymentMethods.length)]
+    const paymentMode =
+        payment[Math.floor(Math.random() * payment.length)]
 
     const orderStatus =
-        orderStatuses[Math.floor(Math.random() * orderStatuses.length)]
+        status[Math.floor(Math.random() * status.length)]
 
-    const seller = sellers[Math.floor(Math.random() * sellers.length)]
+    const seller =
+        sellers[Math.floor(Math.random() * sellers.length)]
 
     const quantity = Math.floor(Math.random() * 5) + 1
-    const price = Math.floor(Math.random() * 95000) + 500
-    const discount = Math.floor(Math.random() * 51)
+    const price = Math.floor(Math.random() * 4900) + 100
+    const discount = Math.floor(Math.random() * 31)
 
-    const discountedPrice = Math.round(
+    const finalPrice = Math.round(
         price - (price * discount / 100)
     )
 
-    const rating = Number((Math.random() * 4 + 1).toFixed(1))
-    const stock = Math.floor(Math.random() * 500)
-
-    const selectedTags = []
-
-    // 2 tags
-    for (let j = 0; j < 2; j++) {
-        selectedTags.push(
-            tags[Math.floor(Math.random() * tags.length)]
-        )
-    }
-
-    const startDate = new Date("2024-01-01").getTime()
-    const endDate = new Date("2026-08-25").getTime()
-
-    const randomDate = new Date(
-        startDate + Math.random() * (endDate - startDate)
+    const rating = Number(
+        (Math.random() * 4 + 1).toFixed(1)
     )
 
-    const product = {
-        productId: "PROD" + String(i).padStart(5, "0"),
-        productName: brand + " " + subCategory + " " + i,
-        category: category,
-        subCategory: subCategory,
+    const stock = Math.floor(Math.random() * 150)
+
+    const orderDate = new Date(
+        2025,
+        Math.floor(Math.random() * 12),
+        Math.floor(Math.random() * 28) + 1
+    )
+
+    const itemTags = [
+        tags[Math.floor(Math.random() * tags.length)],
+        tags[Math.floor(Math.random() * tags.length)]
+    ]
+
+    const order = {
+
+        orderId: "ORD" + String(i).padStart(4, "0"),
+
+        itemName: item + " " + i,
+
+        itemType: item,
+
+        department: department,
+
         brand: brand,
 
         price: price,
-        discountPercentage: discount,
-        discountedPrice: discountedPrice,
+
+        discount: discount,
+
+        finalPrice: finalPrice,
+
         quantity: quantity,
-        revenue: discountedPrice * quantity,
+
+        amount: finalPrice * quantity,
 
         rating: rating,
-        reviewCount: Math.floor(Math.random() * 5000),
+
         stock: stock,
-        inStock: stock > 0,
+
+        available: stock > 0,
 
         seller: {
             name: seller,
-            sellerRating: Number((Math.random() * 4 + 1).toFixed(1))
+            rating: Number(
+                (Math.random() * 4 + 1).toFixed(1)
+            )
         },
 
         customer: {
-            customerId: "CUS" +
-                String(Math.floor(Math.random() * 1000) + 1).padStart(4, "0"),
+            name: "Student" + (Math.floor(Math.random() * 500) + 1),
             city: city,
-            state: state,
-            age: Math.floor(Math.random() * 50) + 18
+            age: Math.floor(Math.random() * 23) + 18
         },
 
         payment: {
-            method: paymentMethod,
-            transactionId: "TXN" +
-                Math.random().toString(36).substring(2, 12)
+            mode: paymentMode,
+            transactionId:
+                "TRX" + Math.random().toString(36).substring(2, 10)
         },
 
         orderStatus: orderStatus,
-        orderDate: randomDate,
-        tags: selectedTags,
 
-        specifications: {
-            warranty: (Math.floor(Math.random() * 3) + 1) + " years",
+        orderDate: orderDate,
 
-            color: [
-                "Black", "White", "Blue", "Red", "Silver"
-            ][Math.floor(Math.random() * 5)],
+        tags: itemTags,
 
-            weight: Number((Math.random() * 5 + 0.5).toFixed(2))
+        details: {
+            colour: colours[
+                Math.floor(Math.random() * colours.length)
+            ],
+            warranty:
+                (Math.floor(Math.random() * 3) + 1) + " year",
+            weight:
+                Number((Math.random() * 3 + 0.2).toFixed(2))
         },
 
-        isFeatured: Math.random() > 0.7,
+        featured: Math.random() > 0.75,
+
         createdAt: new Date()
     }
 
-    documents.push(product)
+    data.push(order)
 
-    // 500-500 karke insert
-    if (documents.length === 500) {
-        db.aggex.insertMany(documents)
-        documents = []
+    // insert 500 at a time
+    if (data.length === 500) {
+        db.shopOrders.insertMany(data)
+        data = []
     }
 }
 
-// remaining data
-if (documents.length > 0) {
-    db.aggex.insertMany(documents)
+if (data.length > 0) {
+    db.shopOrders.insertMany(data)
 }
 
-print("5000 documents inserted successfully into aggex!")
+print("3000 records inserted")
 
-// AGGREGATION
+// aggregation
 
 // 1. $match
-// WHERE
 
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $match: {
-            category: "Electronics"
+            itemType: "Notebook"
         }
     }
 ])
 
-// price greater than 50000
+// price more than 2000
 
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $match: {
             price: {
-                $gt: 50000
+                $gt: 2000
             }
         }
     }
 ])
 
-// 2. $project
-// show only selected fields
-
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $project: {
             _id: 0,
-            productName: 1,
-            price: 1
+            itemName: 1,
+            price: 1,
+            quantity: 1
         }
     }
 ])
 
-// calculated field
+// calculated value
 
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $project: {
-            _id: 0,
-            productName: 1,
-            totalValue: {
-                $multiply: ["$price", "$quantity"]
+            itemName: 1,
+            totalAmount: {
+                $multiply: [
+                    "$finalPrice",
+                    "$quantity"
+                ]
             }
         }
     }
 ])
 
-// 3. $group
-// works like GROUP BY
-
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $group: {
-            _id: "$category"
-        }
-    }
-])
-
-// with calculation
-
-db.aggex.aggregate([
-    {
-        $group: {
-            _id: "$category",
-
-            totalProducts: {
+            _id: "$department",
+            totalOrders: {
                 $sum: 1
-            },
+            }
+        }
+    }
+])
+
+// sum and average
+
+db.shopOrders.aggregate([
+    {
+        $group: {
+            _id: "$itemType",
 
             totalQuantity: {
                 $sum: "$quantity"
@@ -261,10 +252,7 @@ db.aggex.aggregate([
     }
 ])
 
-// 4. $sort
-// 1 ascending, -1 descending
-
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $sort: {
             price: -1
@@ -272,126 +260,121 @@ db.aggex.aggregate([
     }
 ])
 
-// 5. $limit
-// 2 records only
+// ascending
 
-db.aggex.aggregate([
+db.shopOrders.aggregate([
+    {
+        $sort: {
+            price: 1
+        }
+    }
+])
+
+db.shopOrders.aggregate([
     {
         $sort: {
             price: -1
         }
     },
     {
-        $limit: 2
+        $limit: 5
     }
 ])
 
-// 6. $skip
-// first 2 skip
-
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
-        $skip: 2
+        $skip: 10
+    },
+    {
+        $limit: 5
     }
 ])
 
-// 7. $unwind
-// array ko alag documents me
-
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $unwind: "$tags"
     }
 ])
 
-// 8. $count
-// count
-
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
-        $count: "totalProducts"
+        $count: "numberOfOrders"
     }
 ])
 
-// 9. $addFields
-// new field
-
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $addFields: {
-            totalValue: {
-                $multiply: ["$price", "$quantity"]
+            totalAmount: {
+                $multiply: [
+                    "$finalPrice",
+                    "$quantity"
+                ]
             }
         }
     }
 ])
 
-// 10. $set
-// field add/change
-
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $set: {
-            totalValue: {
-                $multiply: ["$price", "$quantity"]
+            stockValue: {
+                $multiply: [
+                    "$price",
+                    "$stock"
+                ]
             }
         }
     }
 ])
 
-// 11. $unset
-// field remove
-
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $unset: [
-            "specifications.weight"
+            "details.weight"
         ]
     }
 ])
 
-// 12. $replaceWith
-// selected fields ka new document
-
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $replaceWith: {
-            productName: "$productName",
-            price: "$price",
-            category: "$category"
+            orderId: "$orderId",
+            itemName: "$itemName",
+            amount: "$amount"
         }
     }
 ])
 
-// 13. $lookup
-// JOIN jaisa
-// customers collection required
+// for lookup
 
-db.customers.insertMany([
+db.students.insertMany([
     {
-        customerId: "CUS0001",
-        name: "Rahul"
+        studentId: "ST101",
+        studentName: "Aman",
+        department: "CSE"
     },
     {
-        customerId: "CUS0002",
-        name: "Aman"
+        studentId: "ST102",
+        studentName: "Riya",
+        department: "AI"
     }
 ])
 
-db.aggex.aggregate([
+// lookup example
+
+db.shopOrders.aggregate([
     {
         $lookup: {
-            from: "customers",
-            localField: "customer.customerId",
-            foreignField: "customerId",
-            as: "customerDetails"
+            from: "students",
+            localField: "department",
+            foreignField: "department",
+            as: "studentDetails"
         }
     }
 ])
 
-// 14. $graphLookup
-// recursive data ke liye
-// employees collection required
+// graph lookup example
 
 db.employees.aggregate([
     {
@@ -400,15 +383,12 @@ db.employees.aggregate([
             startWith: "$employeeId",
             connectFromField: "employeeId",
             connectToField: "managerId",
-            as: "team"
+            as: "employeesUnder"
         }
     }
 ])
 
-// 15. $sample
-// random records
-
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $sample: {
             size: 5
@@ -416,17 +396,19 @@ db.aggex.aggregate([
     }
 ])
 
-// 16. $bucket
-// fixed ranges
-
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $bucket: {
             groupBy: "$price",
-            boundaries: [0, 10000, 30000, 50000, 100000],
-            default: "Other",
+
+            boundaries: [
+                0, 500, 1000, 2000, 5000
+            ],
+
+            default: "5000+",
+
             output: {
-                count: {
+                total: {
                     $sum: 1
                 }
             }
@@ -434,10 +416,7 @@ db.aggex.aggregate([
     }
 ])
 
-// 17. $bucketAuto
-// automatic ranges
-
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $bucketAuto: {
             groupBy: "$price",
@@ -446,40 +425,40 @@ db.aggex.aggregate([
     }
 ])
 
-// GROUP OPERATORS
+// group operators
 
-// $sum
+// sum
 
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $group: {
-            _id: "$category",
-            totalRevenue: {
-                $sum: "$revenue"
+            _id: "$department",
+            totalAmount: {
+                $sum: "$amount"
             }
         }
     }
 ])
 
-// $avg
+// average
 
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $group: {
-            _id: "$category",
-            averagePrice: {
-                $avg: "$price"
+            _id: "$brand",
+            averageRating: {
+                $avg: "$rating"
             }
         }
     }
 ])
 
-// $min
+// minimum
 
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $group: {
-            _id: "$category",
+            _id: "$itemType",
             minimumPrice: {
                 $min: "$price"
             }
@@ -487,12 +466,12 @@ db.aggex.aggregate([
     }
 ])
 
-// $max
+// maximum
 
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $group: {
-            _id: "$category",
+            _id: "$itemType",
             maximumPrice: {
                 $max: "$price"
             }
@@ -500,10 +479,9 @@ db.aggex.aggregate([
     }
 ])
 
-// $first
-// first value
+// first
 
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $sort: {
             price: 1
@@ -511,18 +489,17 @@ db.aggex.aggregate([
     },
     {
         $group: {
-            _id: "$category",
-            firstProduct: {
-                $first: "$productName"
+            _id: "$itemType",
+            firstItem: {
+                $first: "$itemName"
             }
         }
     }
 ])
 
-// $last
-// last value
+// last
 
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $sort: {
             price: 1
@@ -530,35 +507,33 @@ db.aggex.aggregate([
     },
     {
         $group: {
-            _id: "$category",
-            lastProduct: {
-                $last: "$productName"
+            _id: "$itemType",
+            lastItem: {
+                $last: "$itemName"
             }
         }
     }
 ])
 
-// $push
-// values ko array me
+// push
 
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $group: {
-            _id: "$category",
-            products: {
-                $push: "$productName"
+            _id: "$department",
+            itemList: {
+                $push: "$itemName"
             }
         }
     }
 ])
 
-// $addToSet
-// unique values
+// add to set
 
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $group: {
-            _id: "$category",
+            _id: "$department",
             brands: {
                 $addToSet: "$brand"
             }
@@ -566,21 +541,20 @@ db.aggex.aggregate([
     }
 ])
 
-// ARRAY OPERATORS
+// array
 
-// $filter
-// matching values
+// filter
 
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $project: {
-            productName: 1,
+            itemName: 1,
             tags: {
                 $filter: {
                     input: "$tags",
-                    as: "tag",
+                    as: "t",
                     cond: {
-                        $eq: ["$$tag", "popular"]
+                        $eq: ["$$t", "offer"]
                     }
                 }
             }
@@ -588,18 +562,17 @@ db.aggex.aggregate([
     }
 ])
 
-// $map
-// array values change
+// map
 
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $project: {
             tags: {
                 $map: {
                     input: "$tags",
-                    as: "tag",
+                    as: "t",
                     in: {
-                        $toUpper: "$$tag"
+                        $toUpper: "$$t"
                     }
                 }
             }
@@ -607,28 +580,18 @@ db.aggex.aggregate([
     }
 ])
 
-// $reduce
-// array ko single value me
+// reduce
 
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $project: {
-            tagString: {
+            tagsText: {
                 $reduce: {
                     input: "$tags",
                     initialValue: "",
                     in: {
                         $concat: [
                             "$$value",
-                            {
-                                $cond: [
-                                    {
-                                        $eq: ["$$value", ""]
-                                    },
-                                    "",
-                                    ", "
-                                ]
-                            },
                             "$$this"
                         ]
                     }
@@ -638,14 +601,17 @@ db.aggex.aggregate([
     }
 ])
 
-// COMBINING STAGES
+// combined queries
 
-// top 3 Electronics products
+// CSE items above 2000
 
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $match: {
-            category: "Electronics"
+            department: "CSE",
+            price: {
+                $gt: 2000
+            }
         }
     },
     {
@@ -654,111 +620,90 @@ db.aggex.aggregate([
         }
     },
     {
-        $limit: 3
+        $limit: 5
     },
     {
         $project: {
             _id: 0,
-            productName: 1,
-            price: 1
+            itemName: 1,
+            price: 1,
+            department: 1
         }
     }
 ])
 
-// category wise average
+// department wise amount
 
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $group: {
-            _id: "$category",
-            averagePrice: {
-                $avg: "$price"
-            },
-            totalProducts: {
-                $sum: 1
+            _id: "$department",
+            totalAmount: {
+                $sum: "$amount"
             }
         }
     },
     {
         $sort: {
-            averagePrice: -1
+            totalAmount: -1
         }
     }
 ])
 
-// HAVING jaisa
-// pehle group, fir filter
+// having type condition
 
-db.aggex.aggregate([
+db.shopOrders.aggregate([
     {
         $group: {
-            _id: "$category",
-            totalProducts: {
+            _id: "$itemType",
+            totalOrders: {
                 $sum: 1
             }
         }
     },
     {
         $match: {
-            totalProducts: {
-                $gt: 450
+            totalOrders: {
+                $gt: 250
             }
         }
     }
 ])
 
-// category wise revenue
+// out
 
-db.aggex.aggregate([
+// save result
+
+db.shopOrders.aggregate([
     {
         $group: {
-            _id: "$category",
-            totalRevenue: {
-                $sum: "$revenue"
-            }
-        }
-    },
-    {
-        $sort: {
-            totalRevenue: -1
-        }
-    }
-])
-
-// SAVE RESULT
-
-// $out
-// result new collection me
-
-db.aggex.aggregate([
-    {
-        $group: {
-            _id: "$category",
-            totalProducts: {
+            _id: "$department",
+            totalOrders: {
                 $sum: 1
             }
         }
     },
     {
-        $out: "categorySummary"
+        $out: "departmentReport"
     }
 ])
 
-// $merge
-// result merge
+// merge
 
-db.aggex.aggregate([
+// merge result
+
+db.shopOrders.aggregate([
     {
         $group: {
-            _id: "$category",
-            totalRevenue: {
-                $sum: "$revenue"
+            _id: "$department",
+            totalAmount: {
+                $sum: "$amount"
             }
         }
     },
     {
         $merge: {
-            into: "categoryRevenue",
+            into: "departmentAmount",
             on: "_id",
             whenMatched: "replace",
             whenNotMatched: "insert"
@@ -766,28 +711,3 @@ db.aggex.aggregate([
     }
 ])
 
-// SQL TO MONGODB
-
-// WHERE    -> $match
-// SELECT   -> $project
-// GROUP BY -> $group
-// ORDER BY -> $sort
-// LIMIT    -> $limit
-// OFFSET   -> $skip
-// JOIN     -> $lookup
-// COUNT    -> $count / $sum
-// AVG      -> $avg
-// SUM      -> $sum
-// MIN      -> $min
-// MAX      -> $max
-
-// STAGE TYPES
-
-// Filtering: $match
-// Fields: $project, $set, $addFields, $unset, $replaceWith
-// Grouping: $group, $count
-// Sorting: $sort, $skip, $limit
-// Arrays: $unwind, $filter, $map, $reduce
-// Join: $lookup, $graphLookup
-// Output: $out, $merge
-// Statistics: $sample, $bucket, $bucketAuto
