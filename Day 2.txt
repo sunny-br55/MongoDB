@@ -1,3 +1,5 @@
+// Insert student data
+
 db.students.insertMany([
     {
         rollNo: 101,
@@ -168,24 +170,25 @@ db.students.insertMany([
 ])
 
 
-LOGICAL OPERATORS
+// Logical operators
 
-$and       $or      $not       $nor
-1.	Find students who belong to the CSE department AND have marks greater than 85.
+// $and
 db.students.find({
     $and: [
         { department: "CSE" },
         { marks: { $gt: 85 } }
     ]
 })
-2.	Find students who belong to CSE OR IT.
+
+// $or
 db.students.find({
     $or: [
         { department: "CSE" },
         { department: "IT" }
     ]
 })
-3.	Find students whose marks are NOT greater than 80.
+
+// $not
 db.students.find({
     marks: {
         $not: {
@@ -193,74 +196,88 @@ db.students.find({
         }
     }
 })
-4.	Find students who are neither from CSE nor from IT.
+
+// $nor
 db.students.find({
     $nor: [
         { department: "CSE" },
         { department: "IT" }
-    ] })
-COMPARISON OPERATORS : 
+    ]
+})
 
-1.	Find students whose department is exactly CSE.
+
+// Comparison operators
+
+// $eq
 db.students.find({
     department: {
         $eq: "CSE"
     }
 })
-2.	Find students whose marks are greater than 80.
+
+// $gt
 db.students.find({
     marks: {
         $gt: 80
     }
 })
-3.	Find students whose marks are less than 70.
+
+// $lt
 db.students.find({
     marks: {
         $lt: 70
     }
 })
-4.	Find students whose marks are greater than or equal to 85.
+
+// $gte
 db.students.find({
     marks: {
         $gte: 85
     }
 })
-5.	Find students whose marks are less than or equal to 70.
+
+// $lte
 db.students.find({
     marks: {
         $lte: 70
     }
 })
-6.	Find students who are NOT from the CSE department.
+
+// $ne
 db.students.find({
     department: {
         $ne: "CSE"
     }
 })
 
-ARRAY OPERATORS
-$in                    $nin                      $all                        $elemMatch            $size
 
-1.	Find students whose department is either CSE or IT.
+// Array operators
+
+// $in
 db.students.find({
     department: {
         $in: ["CSE", "IT"]
-    }})
-2.	Find students whose department is neither CSE nor IT.
+    }
+})
+
+// $nin
 db.students.find({
     department: {
         $nin: ["CSE", "IT"]
-    } })
+    }
+})
 
-3.	Find students who have BOTH Python AND MongoDB skills.
+// $all
 db.students.find({
     skills: {
         $all: ["Python", "MongoDB"]
     }
 })
-$elemMatch
-This is useful when an array contains objects.
-Let's first add an array of objects to one student:
+
+
+// $elemMatch
+
+// Add subjects
 db.students.updateOne(
     { rollNo: 101 },
     {
@@ -273,7 +290,8 @@ db.students.updateOne(
         }
     }
 )
-4.	Find students who have a subject named MongoDB with marks greater than 85.
+
+// Find MongoDB with marks > 85
 db.students.find({
     subjects: {
         $elemMatch: {
@@ -282,27 +300,30 @@ db.students.find({
         }
     }
 })
-5.	Find students who have exactly 3 skills.
+
+// $size
 db.students.find({
     skills: {
         $size: 3
     }
 })
 
-PROJECTION OPERATORS
 
-Projection means:
-Selecting which fields should be displayed in the result.
-1.	Display only the student's name, department and marks using $project.
+// Projection
+
+// Using $project
 db.students.aggregate([
     {
         $project: {
             _id: 0,
             name: 1,
             department: 1,
-            marks: 1 } } ])
-Include Fields
-2.	Display only name and marks.
+            marks: 1
+        }
+    }
+])
+
+// Display name and marks
 db.students.find(
     {},
     {
@@ -311,18 +332,19 @@ db.students.find(
         marks: 1
     }
 )
-Exclude Fields
-Similarly, we exclude fields using 0.
-3.	Display all student information except address.
+
+// Exclude address
 db.students.find(
     {},
     {
         address: 0
     }
 )
-$slice
-$slice is used to return only a portion of an array in the result.
-4.	Display only the first two skills of every student.
+
+
+// $slice
+
+// First two skills
 db.students.find(
     {},
     {
@@ -330,33 +352,37 @@ db.students.find(
         skills: {
             $slice: 2
         }
-    })
-Element Operators:
- 
-1.	Find students whose scholarship field exists.
+    }
+)
+
+
+// Element operators
+
+// $exists true
 db.students.find({
     scholarship: {
         $exists: true
     }
 })
-2.	Find students where scholarship does NOT exist:
+
+// $exists false
 db.students.find({
     scholarship: {
         $exists: false
     }
 })
-$type
-$type is used to check the BSON data type of a field.
-3.	Find students whose marks field is stored as an integer.
+
+// $type
 db.students.find({
     marks: {
         $type: "int"
     }
 })
-$regex
-$regex is used for pattern matching in strings.
 
-4.	Find students whose names start with the letter A.
+
+// $regex
+
+// Names starting with A
 db.students.find({
     name: {
         $regex: "^A"
@@ -364,93 +390,19 @@ db.students.find({
 })
 
 
-for (let i = 1; i <= 50; i++) {
+// Update operations
 
-    db.products.insertOne({
-        productId: i,
-        productName: "Product " + i ,
-        category:
-            i % 5 === 0 ? "Laptop" :
-            i % 5 === 1 ? "Mobile" :
-            i % 5 === 2 ? "Headphones" :
-            i % 5 === 3 ? "Keyboard" :
-                          "Mouse",
-
-        brand:
-            i % 3 === 0 ? "Dell" :
-            i % 3 === 1 ? "Samsung" :
-                          "HP",
-
-        price: 1000 + (i * 500),
-
-        stock: 10 + i,
-
-        rating: 3 + ((i % 3) * 0.5),
-
-        inStock: i % 4 !== 0,
-
-        tags: [
-            "electronics",
-            i % 2 === 0 ? "featured" : "new"
-        ],
-
-        seller: {
-            sellerId: 1000 + i,
-            sellerName: "Seller " + i
-        },
-
-        createdAt: new Date()
-    });
-}
-
-READ (Find) Operation : 
-1.	How do you find all products belonging to the Laptop category?
-db.products.find({
-    category: "Laptop"
-})
-2.	How do you find all products that are currently in stock?
-db.products.find({
-    inStock: true
-})
-3.	How do you find products whose price is greater than 20000?
-db.products.find({
-    price: {
-        $gt: 20000
-    }
-})
-4.	How do you find products whose price is less than 10000?
-db.products.find({
-    price: {
-        $lt: 10000 } })
-5.	How do you find products whose price is between 10000 and 30000?
-db.products.find({
-    price: {
-        $gte: 10000,
-        $lte: 30000 } })
-6.	How do you find products sold by Seller 10?
-db.products.find({
-    "seller.sellerName": "Seller 10" })
-
-
-MongoDB — Update Operations
-MongoDB provides several operations for modifying existing documents:
-updateOne()
-updateMany()
-replaceOne()
-
-What is updateOne() in MongoDB?
-updateOne() is used to modify the first document that matches a specified condition.
-Syntax:
-db.collection.updateOne(
-    { filter },
-    { update })
-1.	Change the price of Product 1 to 10000.
+// $set
 db.products.updateOne(
     { productId: 1 },
-    { $set: { price: 10000 } } )
+    {
+        $set: {
+            price: 10000
+        }
+    }
+)
 
-Updating Multiple Fields
-1.	Update the price and stock of Product 2.
+// Update price and stock
 db.products.updateOne(
     { productId: 2 },
     {
@@ -460,7 +412,8 @@ db.products.updateOne(
         }
     }
 )
-2.	Change the seller name of Product 3 to "Premium Seller".
+
+// Update seller name
 db.products.updateOne(
     { productId: 3 },
     {
@@ -470,7 +423,7 @@ db.products.updateOne(
     }
 )
 
-3.	Add "sale" to the tags array of Product 4.
+// $push
 db.products.updateOne(
     { productId: 4 },
     {
@@ -479,15 +432,18 @@ db.products.updateOne(
         }
     }
 )
-4.	Add "electronics" to the tags of Product 5 without creating a duplicate.
+
+// $addToSet
 db.products.updateOne(
     { productId: 5 },
     {
         $addToSet: {
-            tags: "electronics" } } )
-$inc
-$inc is used to increase or decrease a numeric field.
-5.	Increase the stock of Product 6 by 20.
+            tags: "electronics"
+        }
+    }
+)
+
+// $inc
 db.products.updateOne(
     { productId: 6 },
     {
@@ -496,8 +452,8 @@ db.products.updateOne(
         }
     }
 )
-6.	Decrease the stock of Product 6 by 5.
-Answer:
+
+// Decrease stock
 db.products.updateOne(
     { productId: 6 },
     {
@@ -506,9 +462,21 @@ db.products.updateOne(
         }
     }
 )
-updateMany()
-Now we move from one document → multiple documents.
-1.	Set inStock to true for all products belonging to the Laptop category.
+
+// $unset
+db.products.updateOne(
+    { productId: 1 },
+    {
+        $unset: {
+            rating: ""
+        }
+    }
+)
+
+
+// updateMany
+
+// Laptop products
 db.products.updateMany(
     { category: "Laptop" },
     {
@@ -517,7 +485,8 @@ db.products.updateMany(
         }
     }
 )
-2.	Increase the price of all Samsung products by 1000.
+
+// Samsung products
 db.products.updateMany(
     { brand: "Samsung" },
     {
@@ -526,7 +495,10 @@ db.products.updateMany(
         }
     }
 )
-Example using multiple operators
+
+
+// Multiple operators
+
 db.products.updateOne(
     { productId: 10 },
     {
@@ -534,71 +506,39 @@ db.products.updateOne(
             price: 25000,
             inStock: true
         },
+
         $inc: {
             stock: 10
         },
+
         $push: {
-            tags: "sale" }})
+            tags: "sale"
+        }
+    }
+)
 
-MongoDB — Delete Operations
-MongoDB mainly provides two deletion methods:
-deleteOne()
-deleteMany()
 
-deleteOne()
-What is deleteOne()?
-deleteOne() is used to delete the first document that matches a specified condition.
-Syntax:
-db.collection.deleteOne({
-    condition
-})
-1.	Delete the product whose productId is 10.
+// Delete operations
+
+// deleteOne
 db.products.deleteOne({
     productId: 10
 })
 
-deleteMany()
-What is deleteMany()?
-deleteMany() is used to delete all documents that match a specified condition.
-Syntax:
-db.collection.deleteMany({
-    condition
-})
-1.	Delete all products belonging to the Laptop category.
+// deleteMany
 db.products.deleteMany({
     category: "Laptop"
 })
-2.	Delete all products whose price is greater than 30000.
-Answer:
+
+// Price greater than 30000
 db.products.deleteMany({
     price: {
         $gt: 30000
     }
 })
-3.	How do you delete all documents from the products collection without deleting the collection itself?
+
+// Delete all documents
 db.products.deleteMany({})
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// Delete collection
+db.products.drop()
