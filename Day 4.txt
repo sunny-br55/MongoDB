@@ -1,0 +1,308 @@
+use CampusStoreDB
+
+// product data
+const products = [
+  {
+    productId: 1,
+    name: "Dell Laptop 1",
+    category: "Laptop",
+    brand: "Dell",
+    price: 62000,
+    quantity: 5,
+    rating: 4.4,
+    description: "Dell laptop for students and college work",
+    tags: ["new", "student"],
+    seller: { sellerId: 2001, name: "Rahul", city: "Jaipur" },
+    location: { type: "Point", coordinates: [75.80, 26.90] },
+    paymentMethods: ["UPI", "Card"],
+    status: "active",
+    createdAt: new Date("2025-01-10"),
+    email: "rahul1@example.com"
+  },
+  {
+    productId: 2,
+    name: "HP Laptop 2",
+    category: "Laptop",
+    brand: "HP",
+    price: 54000,
+    quantity: 4,
+    rating: 4.2,
+    description: "HP laptop for coding and college projects",
+    tags: ["popular", "student"],
+    seller: { sellerId: 2002, name: "Aman", city: "Delhi" },
+    location: { type: "Point", coordinates: [77.10, 28.70] },
+    paymentMethods: ["UPI", "Cash"],
+    status: "active",
+    createdAt: new Date("2025-01-15")
+  },
+  {
+    productId: 3,
+    name: "Lenovo Laptop 3",
+    category: "Laptop",
+    brand: "Lenovo",
+    price: 48000,
+    quantity: 7,
+    rating: 4.1,
+    description: "Lenovo laptop for daily college use",
+    tags: ["budget", "student"],
+    seller: { sellerId: 2003, name: "Ravi", city: "Kota" },
+    location: { type: "Point", coordinates: [75.83, 25.18] },
+    paymentMethods: ["Card", "UPI"],
+    status: "active",
+    createdAt: new Date("2025-02-02"),
+    email: "ravi3@example.com"
+  },
+  {
+    productId: 4,
+    name: "Samsung Mobile 4",
+    category: "Mobile",
+    brand: "Samsung",
+    price: 32000,
+    quantity: 8,
+    rating: 4.3,
+    description: "Samsung mobile with good battery and camera",
+    tags: ["new", "popular"],
+    seller: { sellerId: 2004, name: "Vikas", city: "Mumbai" },
+    location: { type: "Point", coordinates: [72.88, 19.08] },
+    paymentMethods: ["UPI", "Card"],
+    status: "active",
+    createdAt: new Date("2025-02-10")
+  },
+  {
+    productId: 5,
+    name: "Apple Mobile 5",
+    category: "Mobile",
+    brand: "Apple",
+    price: 75000,
+    quantity: 3,
+    rating: 4.7,
+    description: "Apple mobile for students and personal use",
+    tags: ["premium", "new"],
+    seller: { sellerId: 2005, name: "Karan", city: "Pune" },
+    location: { type: "Point", coordinates: [73.85, 18.52] },
+    paymentMethods: ["Card", "UPI"],
+    status: "active",
+    createdAt: new Date("2025-02-18"),
+    email: "karan5@example.com"
+  },
+  {
+    productId: 6,
+    name: "Sony Headphones 6",
+    category: "Headphones",
+    brand: "Sony",
+    price: 8500,
+    quantity: 10,
+    rating: 4.5,
+    description: "Sony headphones for music and online classes",
+    tags: ["popular", "sale"],
+    seller: { sellerId: 2006, name: "Nikhil", city: "Ajmer" },
+    location: { type: "Point", coordinates: [74.63, 26.45] },
+    paymentMethods: ["UPI", "Cash"],
+    status: "inactive",
+    createdAt: new Date("2025-03-01")
+  },
+  {
+    productId: 7,
+    name: "Logitech Mouse 7",
+    category: "Mouse",
+    brand: "Logitech",
+    price: 1200,
+    quantity: 20,
+    rating: 4.0,
+    description: "Logitech mouse for computer and laptop",
+    tags: ["budget", "student"],
+    seller: { sellerId: 2007, name: "Mohit", city: "Udaipur" },
+    location: { type: "Point", coordinates: [73.68, 24.58] },
+    paymentMethods: ["UPI", "Cash"],
+    status: "active",
+    createdAt: new Date("2025-03-08"),
+    email: "mohit7@example.com"
+  },
+  {
+    productId: 8,
+    name: "Asus Monitor 8",
+    category: "Monitor",
+    brand: "Asus",
+    price: 18500,
+    quantity: 6,
+    rating: 4.2,
+    description: "Asus monitor for coding and office work",
+    tags: ["new", "featured"],
+    seller: { sellerId: 2008, name: "Arjun", city: "Jodhpur" },
+    location: { type: "Point", coordinates: [73.02, 26.24] },
+    paymentMethods: ["Card", "UPI"],
+    status: "active",
+    createdAt: new Date("2025-03-12")
+  },
+  {
+    productId: 9,
+    name: "Canon Camera 9",
+    category: "Camera",
+    brand: "Canon",
+    price: 56000,
+    quantity: 2,
+    rating: 4.6,
+    description: "Canon camera for photography and college events",
+    tags: ["premium", "popular"],
+    seller: { sellerId: 2009, name: "Sahil", city: "Bhopal" },
+    location: { type: "Point", coordinates: [77.41, 23.26] },
+    paymentMethods: ["Card", "Net Banking"],
+    status: "active",
+    createdAt: new Date("2025-03-20"),
+    email: "sahil9@example.com"
+  },
+  {
+    productId: 10,
+    name: "OnePlus Mobile 10",
+    category: "Mobile",
+    brand: "OnePlus",
+    price: 36000,
+    quantity: 9,
+    rating: 4.3,
+    description: "OnePlus mobile for everyday use",
+    tags: ["trending", "sale"],
+    seller: { sellerId: 2010, name: "Deepak", city: "Lucknow" },
+    location: { type: "Point", coordinates: [80.95, 26.85] },
+    paymentMethods: ["UPI", "Card"],
+    status: "inactive",
+    createdAt: new Date("2025-04-01")
+  },
+  {
+    productId: 11,
+    name: "Dell Keyboard 11",
+    category: "Keyboard",
+    brand: "Dell",
+    price: 1800,
+    quantity: 15,
+    rating: 4.0,
+    description: "Dell keyboard for regular computer work",
+    tags: ["budget", "student"],
+    seller: { sellerId: 2011, name: "Manish", city: "Jaipur" },
+    location: { type: "Point", coordinates: [75.78, 26.92] },
+    paymentMethods: ["UPI", "Cash"],
+    status: "active",
+    createdAt: new Date("2025-04-05"),
+    email: "manish11@example.com"
+  },
+  {
+    productId: 12,
+    name: "HP Printer 12",
+    category: "Printer",
+    brand: "HP",
+    price: 12500,
+    quantity: 5,
+    rating: 4.1,
+    description: "HP printer for assignments and college work",
+    tags: ["popular", "student"],
+    seller: { sellerId: 2012, name: "Rohit", city: "Delhi" },
+    location: { type: "Point", coordinates: [77.12, 28.68] },
+    paymentMethods: ["Card", "UPI"],
+    status: "active",
+    createdAt: new Date("2025-04-12")
+  }
+]
+
+// insert the data
+db.products.insertMany(products)
+
+db.products.countDocuments()
+
+// price index
+db.products.find({
+  price: { $gt: 50000 }
+}).explain("executionStats")
+
+db.products.createIndex({ price: 1 })
+
+db.products.find({
+  price: { $gt: 50000 }
+}).explain("executionStats")
+
+// compound index
+db.products.find({
+  category: "Laptop",
+  price: { $gt: 50000 }
+}).explain("executionStats")
+
+db.products.createIndex({
+  category: 1,
+  price: -1
+})
+
+db.products.find({
+  category: "Laptop",
+  price: { $gt: 50000 }
+}).explain("executionStats")
+
+// index on tags
+db.products.createIndex({ tags: 1 })
+
+db.products.find({
+  tags: "student"
+}).explain("executionStats")
+
+// text search
+db.products.createIndex({
+  description: "text"
+})
+
+db.products.find({
+  $text: { $search: "laptop" }
+}).explain("executionStats")
+
+// hashed index
+db.products.createIndex({
+  productId: "hashed"
+})
+
+db.products.find({
+  productId: 5
+})
+
+// location index
+db.products.createIndex({
+  location: "2dsphere"
+})
+
+db.products.find({
+  location: {
+    $near: {
+      $geometry: {
+        type: "Point",
+        coordinates: [75.80, 26.90]
+      },
+      $maxDistance: 10000
+    }
+  }
+})
+
+// unique sparse index
+db.products.createIndex(
+  { email: 1 },
+  {
+    unique: true,
+    sparse: true
+  }
+)
+
+db.products.findOne({
+  email: "rahul1@example.com"
+})
+
+// partial index
+db.products.createIndex(
+  { price: 1 },
+  {
+    partialFilterExpression: {
+      status: "active"
+    }
+  }
+)
+
+// wildcard index
+db.products.createIndex({
+  "$**": 1
+})
+
+// show indexes
+db.products.getIndexes()
