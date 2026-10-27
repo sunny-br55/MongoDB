@@ -1,0 +1,69 @@
+// Index creation
+db.students.createIndex({ name: 1 })
+db.students.createIndex({ rollNo: -1 })
+db.students.getIndexes()
+db.students.dropIndex("name_1")
+
+// Single-field index
+db.students.createIndex({ rollNo: 1 })
+db.students.find({ rollNo: 101 })
+
+// Compound index
+db.students.createIndex({ department: 1, marks: -1 })
+db.students.find({ department: "CSE" }).sort({ marks: -1 })
+
+// Multikey index
+db.students.insertOne({
+  name: "Aman",
+  skills: ["Java", "MongoDB", "Python"]
+})
+db.students.createIndex({ skills: 1 })
+db.students.find({ skills: "MongoDB" })
+
+// Explain plan
+db.students.find({ rollNo: 101 }).explain("executionStats")
+
+// Hidden index
+db.students.createIndex({ email: 1 })
+db.students.hideIndex("email_1")
+db.students.unhideIndex("email_1")
+db.students.getIndexes()
+
+// Unique index
+db.students.createIndex({ email: 1 }, { unique: true })
+
+// Index validation
+db.students.find({ rollNo: 101 }).explain("executionStats")
+
+// Compound index order / ESR example
+db.orders.createIndex({ status: 1, createdAt: -1 })
+db.orders.find({ status: "Pending" }).sort({ createdAt: -1 })
+db.orders.find({ status: "Pending" }).sort({ createdAt: -1 }).explain("executionStats")
+
+// Replication status
+rs.status()
+
+// Primary and secondary members
+rs.status()
+
+// Read preference
+db.students.find().readPref("primary")
+db.students.find().readPref("primaryPreferred")
+db.students.find().readPref("secondary")
+db.students.find().readPref("secondaryPreferred")
+db.students.find().readPref("nearest")
+
+// Write concern
+db.students.insertOne(
+  { name: "Riya", rollNo: 102 },
+  { writeConcern: { w: "majority", wtimeout: 5000 } }
+)
+
+db.students.updateOne(
+  { rollNo: 102 },
+  { $set: { name: "Riya Sharma" } },
+  { writeConcern: { w: 1 } }
+)
+
+// Check replica-set state and election outcome
+rs.status()
